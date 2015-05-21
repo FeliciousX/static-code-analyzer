@@ -39,16 +39,20 @@ var getDataSummary = function(version) {
             finalData.WMCv = WMCv;
             finalData.MVG = MVG;
 
-            console.log(finalData);
+            //console.log(finalData);
+            console.log('"%s",%d,%d,%d,%d,%d', version, NOM, LOC, WMC, WMCv, MVG);
 
         });
     });
 };
 
+
 fs.readFile(__dirname + '/' + process.argv[2], 'utf8', function(err, data) {
     if (err) throw err;
+
+    console.log("version,NOM,LOC,WMC,WMCv,MVG");
+
     var arr = data.split('\n');
-    
     arr.forEach( function(version) {
         if (version !== '') {
             getDataSummary(version);
