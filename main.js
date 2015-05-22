@@ -15,34 +15,31 @@ var getDataSummary = function(version) {
 
     var finalData = {};
 
-    fs.readFile(__dirname + '/analyze/' + version + '/cccc.xml', function(err, data) {
+    parser.parseString(fs.readFileSync(__dirname + '/analyze/' + version + '/cccc.xml', 'utf8'), function(err, result) {
         if (err) throw err;
-        parser.parseString(data, function(err, result) {
-            if (err) throw err;
 
-            projectSummary = result.CCCC_Project.project_summary;
-            ooDesign = result.CCCC_Project.oo_design;
+        projectSummary = result.CCCC_Project.project_summary;
+        ooDesign = result.CCCC_Project.oo_design;
 
-            NOM = Number(projectSummary[0]['number_of_modules'][0]['$'].value);
-            LOC = Number(projectSummary[0]['lines_of_code'][0]['$'].value);
-            MVG = Number(projectSummary[0]['McCabes_cyclomatic_complexity'][0]['$'].value);
+        NOM = Number(projectSummary[0]['number_of_modules'][0]['$'].value);
+        LOC = Number(projectSummary[0]['lines_of_code'][0]['$'].value);
+        MVG = Number(projectSummary[0]['McCabes_cyclomatic_complexity'][0]['$'].value);
 
-            ooDesign[0].module.forEach( function (module) {
-                WMC += Number(module['weighted_methods_per_class_unity'][0]['$'].value);
-                WMCv += Number(module['weighted_methods_per_class_visibility'][0]['$'].value);
-            });
-
-            finalData.version = version;
-            finalData.NOM = NOM;
-            finalData.LOC = LOC;
-            finalData.WMC = WMC;
-            finalData.WMCv = WMCv;
-            finalData.MVG = MVG;
-
-            //console.log(finalData);
-            console.log('"%s",%d,%d,%d,%d,%d', version, NOM, LOC, WMC, WMCv, MVG);
-
+        ooDesign[0].module.forEach( function (module) {
+            WMC += Number(module['weighted_methods_per_class_unity'][0]['$'].value);
+            WMCv += Number(module['weighted_methods_per_class_visibility'][0]['$'].value);
         });
+
+        finalData.version = version;
+        finalData.NOM = NOM;
+        finalData.LOC = LOC;
+        finalData.WMC = WMC;
+        finalData.WMCv = WMCv;
+        finalData.MVG = MVG;
+
+        //console.log(finalData);
+        console.log('"%s",%d,%d,%d,%d,%d', version, NOM, LOC, WMC, WMCv, MVG);
+
     });
 };
 
